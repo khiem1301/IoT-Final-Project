@@ -34,7 +34,7 @@ bool systemRunning = true;
 bool flagIn = false;
 bool flagOut = false;
 
-// --- Measure distance from ultrasonic sensor ---
+// --- đo khoảng cách ---
 long measureDistance(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -70,14 +70,14 @@ void sendBluetoothData() {
   long revenue = (long)totalCarsEntered * parkingFee;
   String msg = "Cars: " + String(totalCarsEntered) + " | Money: " + String(revenue);
 
-  // ❗ Tạm detach servo để tránh giật
+  //  Tạm detach servo để tránh giật
   servoIn.detach();
   servoOut.detach();
 
   btSerial.println(msg);
   delay(50); // Cho HC-05 thời gian gửi
 
-  // ✅ Gắn lại servo sau khi gửi xong
+  //  Gắn lại servo sau khi gửi xong
   servoIn.attach(servoInPin);
   servoOut.attach(servoOutPin);
   servoIn.write(90);
@@ -124,7 +124,7 @@ void loop() {
   long distIn = measureDistance(trigIn, echoIn);
   long distOut = measureDistance(trigOut, echoOut);
 
-  // PHÁT HIỆN XE VÀO
+  // Phát hiện xe vào
   if (distIn < 10 && !flagIn) {
     flagIn = true;
     if (occupiedSpots < totalSpots) {
@@ -134,12 +134,12 @@ void loop() {
       delay(1200);
       servoIn.write(90);
       updateDisplay();
-      sendBluetoothData();  // ✅ Gửi khi có xe vào
+      sendBluetoothData();  //  Gửi khi có xe vào
     }
   }
   if (distIn > 20) flagIn = false;
 
-  // PHÁT HIỆN XE RA
+  // Phát hiện xe ra
   if (distOut < 10 && !flagOut) {
     flagOut = true;
     if (occupiedSpots > 0) {
